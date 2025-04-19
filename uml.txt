@@ -1,49 +1,51 @@
 @startuml
 class FSM {
-  + states : Dictionary<Type, IState>
-  + AddState(state : Object)
-  + TransitionTo(type : Type)
+    + states : Dictionary<Type, IState>
+    + AddState(state : Object)
+    + TransitionTo(type : Type)
 }
 
 interface IState {
-  + Setup(fsm)
-  + EnterState()
-  + Update()
-  + ExitState()
+    + Setup(fsm)
+    + EnterState()
+    + Update()
+    + ExitState()
 }
 
 abstract class HealthState implements IState {
-  + OnEnter : Action<Type>
-  # fsm : FSM
-  + virtual EnterState()
-  + virtual ExitState()
-  + virtual Setup(fsm : FSM)
-  + virtual Update()
-  + virtual TakeHit()
+    + OnEnter : Action<Type>
+    # fsm : FSM
+    + virtual EnterState()
+    + virtual ExitState()
+    + virtual Setup(fsm : FSM)
+    + virtual Update()
+    + virtual TakeHit()
 }
 
 class HealthStateHandler {
-  - fsm : FSM
-  + Setup()
-  + Update()
-  + TakeHit()
+    - fsm : FSM
+    + Setup()
+    + Update()
+    + TakeHit()
 }
 
 class HealthyState extends HealthState {
-  + override EnterState()
-  + override ExitState()
-  + override Setup(fsm : FSM)
-  + override Update()
-  + override TakeHit()
+    + override EnterState()
+    + override ExitState()
+    + override Setup(fsm : FSM)
+    + override Update()
+    + override TakeHit()
 }
 
 class InjuredState extends HealthState {
-  + override EnterState()
-  + override ExitState()
-  + override Setup(fsm : FSM)
-  + override Update()
-  + override TakeHit()
+    + override EnterState()
+    + override ExitState()
+    + override Setup(fsm : FSM)
+    + override Update()
+    + override TakeHit()
 }
+
+note "Are we allowed to use GEMINI ( AI TOOL used for C# --> UML ) and is this good? - Tim" as TimNote
 
 FSM --|> IState
 HealthState --|> IState
