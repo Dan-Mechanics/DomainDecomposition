@@ -45,6 +45,14 @@ class InjuredState extends HealthState {
     + override TakeHit()
 }
 
+class DownedState extends HealthState {
+    + override EnterState()
+    + override ExitState()
+    + override Setup(fsm : FSM)
+    + override Update()
+    + override TakeHit()
+}
+
 note "Are we allowed to use an AI TOOL for C# --> UML? Besides that, is this making sense? - Tim" as TimNote
 
 FSM --|> IState
