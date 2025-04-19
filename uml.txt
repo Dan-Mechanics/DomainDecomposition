@@ -45,7 +45,7 @@ class InjuredState extends HealthState {
     + override TakeHit()
 }
 
-note "Are we allowed to use GEMINI ( AI TOOL used for C# --> UML ) and is this good? - Tim" as TimNote
+note "Are we allowed to use an AI TOOL for C# --> UML? Besides that, is this making sense? - Tim" as TimNote
 
 FSM --|> IState
 HealthState --|> IState
