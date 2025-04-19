@@ -1,20 +1,32 @@
 @startuml
-class FSM {
-    + states : Dictionary<Type, IState>
-    + AddState(state : Object)
+
+class FSM 
+{
+    + states : readonly Dictionary<Type, T>
+    + AddState(state : T)
     + TransitionTo(type : Type)
+    + Update()
 }
 
-interface IState {
+interface IState 
+{
     + Setup(fsm)
     + EnterState()
     + Update()
     + ExitState()
 }
 
-abstract class HealthState implements IState {
+class HealthStateHandler extends FSM
+{
+    + Setup()
+    + Update()
+    + TakeHit()
+}
+
+abstract class HealthState implements IState 
+{
     + OnEnter : Action<Type>
-    # fsm : FSM
+    # FSM fsm
     + virtual EnterState()
     + virtual ExitState()
     + virtual Setup(fsm : FSM)
@@ -22,14 +34,9 @@ abstract class HealthState implements IState {
     + virtual TakeHit()
 }
 
-class HealthStateHandler {
-    - fsm : FSM
-    + Setup()
-    + Update()
-    + TakeHit()
-}
 
-class HealthyState extends HealthState {
+class HealthyState extends HealthState 
+{
     + override EnterState()
     + override ExitState()
     + override Setup(fsm : FSM)
@@ -37,7 +44,8 @@ class HealthyState extends HealthState {
     + override TakeHit()
 }
 
-class InjuredState extends HealthState {
+class InjuredState extends HealthState 
+{
     + override EnterState()
     + override ExitState()
     + override Setup(fsm : FSM)
@@ -45,7 +53,8 @@ class InjuredState extends HealthState {
     + override TakeHit()
 }
 
-class DownedState extends HealthState {
+class DownedState extends HealthState 
+{
     + override EnterState()
     + override ExitState()
     + override Setup(fsm : FSM)
@@ -53,13 +62,9 @@ class DownedState extends HealthState {
     + override TakeHit()
 }
 
-note "Are we allowed to use an AI TOOL for C# --> UML? Besides that, is this making sense? - Tim" as TimNote
 
-FSM --|> IState
-HealthState --|> IState
-HealthStateHandler -- FSM
-HealthStateHandler ..> HealthyState : creates
-HealthStateHandler ..> InjuredState : creates
-HealthState <|-- HealthyState
-HealthState <|-- InjuredState
+
+note "Is this making sense?" as TimNote
+note "We could add more states than this like INFECTED." as StateNote
+
 @enduml
