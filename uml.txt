@@ -1,22 +1,55 @@
 @startuml
-class FSM{
-  +attribute1: String
-  -attribute2: Integer
-  +method1(state: IState)
-  #method2(param: Type): ReturnType
+class FSM {
+  + states : Dictionary<Type, IState>
+  + AddState(state : Object)
+  + TransitionTo(type : Type)
 }
-
-class ClassB extends ClassA {
-  +attribute3: Boolean
-  +method3()
-}
-
-ClassC "1" -- "*" ClassA : has
-ClassB ..> InterfaceD : implements
 
 interface IState {
-  +Update()
-  +Enter()
-  +Exit()
+  + Setup(fsm)
+  + EnterState()
+  + Update()
+  + ExitState()
 }
+
+abstract class HealthState implements IState {
+  + OnEnter : Action<Type>
+  # fsm : FSM
+  + virtual EnterState()
+  + virtual ExitState()
+  + virtual Setup(fsm : FSM)
+  + virtual Update()
+  + virtual TakeHit()
+}
+
+class HealthStateHandler {
+  - fsm : FSM
+  + Setup()
+  + Update()
+  + TakeHit()
+}
+
+class HealthyState extends HealthState {
+  + override EnterState()
+  + override ExitState()
+  + override Setup(fsm : FSM)
+  + override Update()
+  + override TakeHit()
+}
+
+class InjuredState extends HealthState {
+  + override EnterState()
+  + override ExitState()
+  + override Setup(fsm : FSM)
+  + override Update()
+  + override TakeHit()
+}
+
+FSM --|> IState
+HealthState --|> IState
+HealthStateHandler -- FSM
+HealthStateHandler ..> HealthyState : creates
+HealthStateHandler ..> InjuredState : creates
+HealthState <|-- HealthyState
+HealthState <|-- InjuredState
 @enduml
