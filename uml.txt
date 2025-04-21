@@ -41,6 +41,7 @@ abstract class HealthState implements IState
 {
     + onEnter: Action<Type>
     -handler: HealthStateHandler
+    -fsm: FSM
     
     + void ReferenceHandler(handler: HealthStateHandler)
     + virtual Setup(fsm : FSM)
@@ -94,7 +95,8 @@ class InfectedState extends HealthState
     + override ExitState()
 }
 
-HealthStateHandler ..> HealthState
+HealthState ..> HealthStateHandler
+HealthStateHandler ..> FSM
 DeepWoundState ..> Timer
 FSM ..> IState
 
