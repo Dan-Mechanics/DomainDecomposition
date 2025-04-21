@@ -12,10 +12,18 @@ class FSM
 
 interface IState 
 {
-    + Setup(fsm)
+    + Setup(fsm : FSM)
     + EnterState()
     + Update()
     + ExitState()
+}
+
+
+class Timer
+{
+    + onTimerComplete: Action
+    
+    + void SetTimer(value: float)
 }
 
 class HealthStateHandler 
@@ -35,57 +43,59 @@ abstract class HealthState implements IState
     -handler: HealthStateHandler
     
     + void ReferenceHandler(handler: HealthStateHandler)
+    + virtual Setup(fsm : FSM)
     + virtual EnterState()
+    + virtual Update()
     + virtual ExitState()
-    + virtual Setup(fsm: FSM)
-    + virtual Update())
 }
 
 
 class HealthyState extends HealthState 
 {
-    + override EnterState()
-    + override ExitState()
     + override Setup(fsm : FSM)
+    + override EnterState()
     + override Update()
-    + override TakeHit()
+    + override ExitState()
 }
 
 class InjuredState extends HealthState 
 {
+    + override Setup(fsm : FSM)
     + override EnterState()
-    + override ExitState()
-    + override Setup(fsm: FSM)
     + override Update()
-}
-
-class DownedState extends HealthState 
-{
-    + override EnterState()
     + override ExitState()
-    + override Setup(fsm: FSM)
-    + override Update()
 }
 
 class DeepWoundState extends HealthState 
 {
     - timer : Timer
     
+    + override Setup(fsm : FSM)
     + override EnterState()
-    + override ExitState()
-    + override Setup(fsm: FSM)
     + override Update()
+    + override ExitState()
 }
 
-class Timer
+class DownedState extends HealthState 
 {
-    + onTimerComplete: Action
+    -recoveryProgress: float
     
-    + void SetTimer(value: float)
+    + override Setup(fsm : FSM)
+    + override EnterState()
+    + override Update()
+    + override ExitState()
 }
+
+HealthStateHandler ..> HealthState
+HealthStateHandler ..> InjuredState
+HealthStateHandler ..> DeepWoundState
+HealthStateHandler ..> DownedState
+DeepWoundState ..> Timer
+FSM ..> IState
 
 note "ASK FEEDBACK" as TimNote
 note "The states now scalable." as StateNote
-note "deepwound --> timer, fsm --> istate" as LineNote
+note "deepwound --> timer, fsm --> istate, healthstate -- handler" as LineNote
+note "we're kinda missing locomotion and attacks in general..." as DomainNote
 
 @enduml
