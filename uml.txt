@@ -3,6 +3,8 @@
 class FSM 
 {
     - states : readonly Dictionary<Type, IState>
+    -currentState: IState
+    
     + AddState(key: Type, value: IState)
     + TransitionTo(type: Type)
     + Update()
@@ -18,22 +20,25 @@ interface IState
 
 class HealthStateHandler 
 {
-    -fsm : readonly FSM
+    + playerEvents : readonly Dictionary<Type, Action>
+    -fsm: readonly FSM
+    
     + Setup()
     + Update()
-    + TakeHit()
-    + TransitionTo(type: Type)
+    + Attack(type: Type)
+    + Heal(type: Type)
 }
 
 abstract class HealthState implements IState 
 {
-    + OnEnter : Action<Type>
-    # FSM fsm
+    + onEnter: Action<Type>
+    -handler: HealthStateHandler
+    
+    + void ReferenceHandler(handler: HealthStateHandler)
     + virtual EnterState()
     + virtual ExitState()
-    + virtual Setup(fsm : FSM)
-    + virtual Update()
-    + virtual TakeHit()
+    + virtual Setup(fsm: FSM)
+    + virtual Update())
 }
 
 
@@ -52,35 +57,35 @@ class InjuredState extends HealthState
     + override ExitState()
     + override Setup(fsm: FSM)
     + override Update()
-    + override TakeHit()
 }
 
 class DownedState extends HealthState 
 {
     + override EnterState()
     + override ExitState()
-    + override Setup(fsm : FSM)
+    + override Setup(fsm: FSM)
     + override Update()
-    + override TakeHit()
 }
 
 class DeepWoundState extends HealthState 
 {
     - timer : Timer
+    
     + override EnterState()
     + override ExitState()
     + override Setup(fsm: FSM)
     + override Update()
-    + override TakeHit()
 }
 
 class Timer
 {
-    + OnTimerComplete : Action
+    + onTimerComplete: Action
+    
     + void SetTimer(value: float)
 }
 
 note "ASK FEEDBACK" as TimNote
-note "The states are now scalable." as StateNote
+note "The states now scalable." as StateNote
+note "deepwound --> timer, fsm --> istate" as LineNote
 
 @enduml
