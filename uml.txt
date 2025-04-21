@@ -86,16 +86,20 @@ class DownedState extends HealthState
     + override ExitState()
 }
 
+class InfectedState extends HealthState 
+{
+    + override Setup(fsm : FSM)
+    + override EnterState()
+    + override Update()
+    + override ExitState()
+}
+
 HealthStateHandler ..> HealthState
-HealthStateHandler ..> InjuredState
-HealthStateHandler ..> DeepWoundState
-HealthStateHandler ..> DownedState
 DeepWoundState ..> Timer
 FSM ..> IState
 
 note "ASK FEEDBACK" as TimNote
-note "The states now scalable." as StateNote
-note "deepwound --> timer, fsm --> istate, healthstate -- handler" as LineNote
+note "The states are now scalable." as StateNote
 note "we're kinda missing locomotion and attacks in general..." as DomainNote
 
 @enduml
