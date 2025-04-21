@@ -98,9 +98,4 @@ HealthStateHandler ..> HealthState
 DeepWoundState ..> Timer
 FSM ..> IState
 
-note "ASK FEEDBACK" as TimNote
-note "The states are now scalable." as StateNote
-note "We're kinda missing locomotion and attacks in general..." as DomainNote
-note "AI was used as a learning tool for UML in this." as NoteAI
-
 @enduml
