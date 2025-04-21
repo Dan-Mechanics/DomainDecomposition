@@ -2,9 +2,9 @@
 
 class FSM 
 {
-    + states : readonly Dictionary<Type, T>
-    + AddState(state : T)
-    + TransitionTo(type : Type)
+    - states : readonly Dictionary<Type, IState>
+    + AddState(key: Type, value: IState)
+    + TransitionTo(type: Type)
     + Update()
 }
 
@@ -16,11 +16,13 @@ interface IState
     + ExitState()
 }
 
-class HealthStateHandler extends FSM
+class HealthStateHandler 
 {
+    -fsm : readonly FSM
     + Setup()
     + Update()
     + TakeHit()
+    + TransitionTo(type: Type)
 }
 
 abstract class HealthState implements IState 
@@ -48,7 +50,7 @@ class InjuredState extends HealthState
 {
     + override EnterState()
     + override ExitState()
-    + override Setup(fsm : FSM)
+    + override Setup(fsm: FSM)
     + override Update()
     + override TakeHit()
 }
@@ -62,9 +64,23 @@ class DownedState extends HealthState
     + override TakeHit()
 }
 
+class DeepWoundState extends HealthState 
+{
+    - timer : Timer
+    + override EnterState()
+    + override ExitState()
+    + override Setup(fsm: FSM)
+    + override Update()
+    + override TakeHit()
+}
 
+class Timer
+{
+    + OnTimerComplete : Action
+    + void SetTimer(value: float)
+}
 
-note "Is this making sense?" as TimNote
-note "We could add more states than this like INFECTED." as StateNote
+note "ASK FEEDBACK" as TimNote
+note "The states are now scalable." as StateNote
 
 @enduml
