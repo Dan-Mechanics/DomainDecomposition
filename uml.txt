@@ -28,7 +28,7 @@ class Timer
 
 class HealthStateHandler 
 {
-    -eventHandler : readonlyEventHandler
+    -eventHandler : readonly EventHandler
     -fsm: readonly FSM
     
     + Setup()
