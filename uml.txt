@@ -28,7 +28,7 @@ class Timer
 
 class HealthStateHandler 
 {
-    + interactionEvents : readonly Dictionary<string, Action>
+    -eventHandler : EventHandler
     -fsm: readonly FSM
     
     + Setup()
@@ -40,10 +40,10 @@ abstract class HealthState implements IState
 {
     + onEnter: event Action
     + onExit: event Action
-    -handler: HealthStateHandler
+    -eventHandler: EventHandler
     -fsm: FSM
     
-    + void ReferenceHandler(handler: EventHandler)
+    + void ReferenceHandler(eventHandler: EventHandler)
     + virtual Setup(fsm : FSM)
     + virtual EnterState()
     + virtual Update()
@@ -99,14 +99,14 @@ class InfectedState extends HealthState
 
 class EventHandler
 {
-    - events : readonly Dictionary<string, Action>
+    - eventDictionary : readonly Dictionary<string, Action>
     
     + Raise(string)
     + StartListening(string, Action)
     + StopListening(string, Action)
 }
 
-note "We're drawing in elements of EventManager here." as EventNote
+note "Still need feedback on this me thinks." as FeedbackNote
 
 HealthStateHandler --* FSM
 HealthStateHandler --* EventHandler
@@ -114,6 +114,5 @@ DeepWoundState ..> Timer
 InfectedState ..> Timer
 FSM ..> IState
 HealthState ..> EventHandler
-
 
 @enduml
