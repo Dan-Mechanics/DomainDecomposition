@@ -21,7 +21,7 @@ interface IState
 
 class Timer
 {
-    + onTimerComplete: Action
+    + onTimerComplete: event Action
     
     + void SetTimer(value: float)
 }
@@ -39,7 +39,8 @@ class HealthStateHandler
 
 abstract class HealthState implements IState 
 {
-    + onEnter: Action<Type>
+    + onEnter: event Action
+    + onExit: event Action
     -handler: HealthStateHandler
     -fsm: FSM
     
@@ -89,15 +90,21 @@ class DownedState extends HealthState
 
 class InfectedState extends HealthState 
 {
+    - timer : Timer
+    
     + override Setup(fsm : FSM)
     + override EnterState()
     + override Update()
     + override ExitState()
 }
 
-HealthState ..> HealthStateHandler
+note "Might have instances of HealthState in HealthStateHandler for events." as TimNote
+
+HealthStateHandler -- HealthState
 HealthStateHandler ..> FSM
 DeepWoundState ..> Timer
+InfectedState ..> Timer
 FSM ..> IState
+HealthStateHandler ..> TimNote
 
 @enduml
