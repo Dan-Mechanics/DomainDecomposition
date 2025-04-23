@@ -1,21 +1,26 @@
 @startuml
 
-class FSM
+class FSM<T>
 {
-    - states : readonly Dictionary<Type, IState>
-    -currentState: IState
+    + states : readonly Dictionary<Type, T>
+    -currentState: T
     
-    + AddState(key: Type, value: IState)
-    + TransitionTo(type: Type)
-    + Update()
+    + void AddState(key: Type, value: T)
+    + void TransitionTo(type: Type)
+    + void Update()
+}
+
+interface IDamagable
+{
+    + void TakeDamage()
 }
 
 interface IState 
 {
-    + Setup(fsm : FSM)
-    + EnterState()
-    + Update()
-    + ExitState()
+    + void Setup(fsm : FSM)
+    + void EnterState()
+    + void Update()
+    + void ExitState()
 }
 
 
@@ -26,28 +31,38 @@ class Timer
     + void SetTimer(value: float)
 }
 
-class HealthStateHandler 
+class HealthStateHandler implements IDamagable
 {
-    - eventHandler : readonly EventHandler
-    - fsm: readonly FSM
+    - fsm: readonly FSM<HealthState>
     
     + Setup()
+    + void TakeDamage()
     + Update()
-    + Interact(string)
+    - Interact(type: Type)
+}
+
+class KillerAttack
+{
+    + void Slash()
+}
+
+class DestroyableProp implements IDamagable
+{
+    + void TakeDamage()
+    - void Destroy();
 }
 
 abstract class HealthState implements IState 
 {
     + onEnter: event Action
     + onExit: event Action
-    # eventHandler: EventHandler
     # fsm: FSM
     
-    + void ReferenceHandler(eventHandler: EventHandler)
-    + virtual Setup(fsm : FSM)
-    + virtual EnterState()
-    + virtual Update()
-    + virtual ExitState()
+    + virtual void Setup(fsm : FSM)
+    + virtual void EnterState()
+    + virtual void Update()
+    + virtual void ExitState()
+    + virtual void Interact(type: Type)
 }
 
 
@@ -71,46 +86,40 @@ class DeepWoundState extends HealthState
 {
     - timer : Timer
     
-    + override Setup(fsm : FSM)
-    + override EnterState()
-    + override Update()
-    + override ExitState()
+    + override void Setup(fsm : FSM)
+    + override void EnterState()
+    + override void Update()
+    + override void ExitState()
+    + override void Interact(type: Type)
 }
 
 class DownedState extends HealthState 
 {
     -recoveryProgress: float
     
-    + override Setup(fsm : FSM)
-    + override EnterState()
-    + override Update()
-    + override ExitState()
+    + override void Setup(fsm : FSM)
+    + override void EnterState()
+    + override void Update()
+    + override void ExitState()
+    + override void Interact(type: Type)
 }
 
 class InfectedState extends HealthState 
 {
     - timer : Timer
     
-    + override Setup(fsm : FSM)
-    + override EnterState()
-    + override Update()
-    + override ExitState()
-}
-
-class EventHandler
-{
-    - eventDictionary : readonly Dictionary<string, Action>
-    
-    + Raise(string)
-    + StartListening(string, Action)
-    + StopListening(string, Action)
+    + override void Setup(fsm : FSM)
+    + override void EnterState()
+    + override void Update()
+    + override void ExitState()
+    + override void Interact(type: Type)
 }
 
 FSM --* HealthStateHandler
-EventHandler --* HealthStateHandler
 Timer --* DeepWoundState
 Timer --*  InfectedState
 FSM ..> IState
-HealthState ..> EventHandler
+HealthStateHandler ..> HealthState
+KillerAttack ..> IDamagable
 
 @enduml
