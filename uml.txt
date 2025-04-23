@@ -1,6 +1,6 @@
 @startuml
 
-class FSM 
+class FSM
 {
     - states : readonly Dictionary<Type, IState>
     -currentState: IState
@@ -28,8 +28,8 @@ class Timer
 
 class HealthStateHandler 
 {
-    -eventHandler : readonly EventHandler
-    -fsm: readonly FSM
+    - eventHandler : readonly EventHandler
+    - fsm: readonly FSM
     
     + Setup()
     + Update()
@@ -40,8 +40,8 @@ abstract class HealthState implements IState
 {
     + onEnter: event Action
     + onExit: event Action
-    -eventHandler: EventHandler
-    -fsm: FSM
+    # eventHandler: EventHandler
+    # fsm: FSM
     
     + void ReferenceHandler(eventHandler: EventHandler)
     + virtual Setup(fsm : FSM)
@@ -106,12 +106,10 @@ class EventHandler
     + StopListening(string, Action)
 }
 
-note "Still need feedback on this me thinks." as FeedbackNote
-
-HealthStateHandler --* FSM
-HealthStateHandler --* EventHandler
-DeepWoundState ..> Timer
-InfectedState ..> Timer
+FSM --* HealthStateHandler
+EventHandler --* HealthStateHandler
+Timer --* DeepWoundState
+Timer --*  InfectedState
 FSM ..> IState
 HealthState ..> EventHandler
 
