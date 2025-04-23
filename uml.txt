@@ -15,6 +15,11 @@ interface IDamagable
     + void TakeDamage()
 }
 
+interface IInfectable
+{
+    + void Infect()
+}
+
 interface IState 
 {
     + void Setup(fsm : FSM)
@@ -31,19 +36,21 @@ class Timer
     + void SetTimer(value: float)
 }
 
-class HealthStateHandler implements IDamagable
+class HealthStateHandler implements IDamagable, IInfectable
 {
     - fsm: readonly FSM<HealthState>
     
     + Setup()
     + void TakeDamage()
+    + void Infect()
     + Update()
     - Interact(type: Type)
 }
 
-class KillerAttack
+class KillerAttacks
 {
-    + void Slash()
+    + void DealDamage()
+    + void Infect()
 }
 
 class DestroyableProp implements IDamagable
@@ -120,6 +127,7 @@ Timer --* DeepWoundState
 Timer --*  InfectedState
 FSM ..> IState
 HealthStateHandler ..> HealthState
-KillerAttack ..> IDamagable
+KillerAttacks ..> IDamagable
+KillerAttacks ..> IInfectable
 
 @enduml
