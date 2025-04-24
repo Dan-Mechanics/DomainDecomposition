@@ -1,57 +1,70 @@
 @startuml
 title Dead by Daylight : Generators
 
-object Gameworld
-object Generator1 
-    Generator1 : type = red
-    Generator1 : position = (55,210,65)
-    Generator1 : state = "progressing"
-    Generator1 : progress = 43,1%
-    Generator1 : difficulty = "normal"
+class Generator 
+{
+    type: string
+    position: (x,y,z)
+    progress: float
+    difficulty: string
+    state: List<string>
+}
 
-object Generator2
-    Generator2 : type = yellow
-    Generator2 : position = (34,155,55)
-    Generator2 : state = "idle"
-    Generator2 : progress = 0.0%
-    Generator2 : difficulty = "normal"
-object Generator3
-    Generator3 : type = floodlight
-    Generator3 : position = (22,145,56)
-    Generator3 : state = "regressing"
-    Generator3 : progress = 5.4%
-    Generator3 : difficulty = "hard"
-object Generator4
-    Generator4 : type = yellow
-    Generator4 : position = (122,152,55)
-    Generator4 : state = "blocked"
-    Generator4 : progress = 66.2%
-    Generator4 : difficulty = "silent"
-object Generator5
-    Generator5 : type = floodlight
-    Generator5 : position = (232,155,50)
-    Generator5 : state = "progressing"
-    Generator5 : progress = 89.5%
-    Generator5 : difficulty = "normal"
-object Generator6
-    Generator6 : type = red
-    Generator6 : position = (255,155,45)
-    Generator6 : state = "complete"
-    Generator6 : progress = 100.0%
-    Generator6 : difficulty = "normal"
-object Generator7
-    Generator7 : type = floodlight
-    Generator7 : position = (124,155,50)
-    Generator7 : state = "idle"
-    Generator7 : progress = 0.0%
-    Generator7 : difficulty = "normal"
+class SkillcheckHandler
+{
 
-Gameworld -- Generator1
-Gameworld-- Generator2
-Gameworld -- Generator3
-Gameworld-- Generator4
-Gameworld -- Generator5
-Gameworld-- Generator6
-Gameworld *-- Generator7
+}
+
+object StateHandler
+StateHandler : currentStates = ["progressing", "regressing", "idle", "complete", "infected", ]
+
+object Skillcheck
+Skillcheck : difficulty = "normal"
+Skillcheck : position = "center"
+Skillcheck : succesModifier = +5%
+Skillcheck : greatSuccesModifier = +15%
+Skillcheck : failModifier = -10%
+Skillcheck : triggerSize = 25%
+Skillcheck : greatTriggerSize = 3%
+
+object MadnessSkillcheck
+MadnessSkillcheck : difficulty = "hard"
+MadnessSkillcheck : position = "random"
+MadnessSkillcheck : succesModifier = +5%
+MadnessSkillcheck : greatSuccesModifier = +15%
+MadnessSkillcheck : failModifier = -10%
+MadnessSkillcheck : triggerSize = 25%
+MadnessSkillcheck : greatTriggerSize = 3%
+
+object RelentlessSkillcheck
+RelentlessSkillcheck : difficulty = "hard"
+RelentlessSkillcheck : position = "center"
+RelentlessSkillcheck : succesModifier = +0%
+RelentlessSkillcheck : greatSuccesModifier = +0%
+RelentlessSkillcheck : failModifier = -10%
+RelentlessSkillcheck : triggerSize = 3%
+RelentlessSkillcheck : greatTriggerSize = 0%
+
+enum GeneratorType 
+{
+    red
+    yellow
+    floodlight
+}
+
+enum GeneratorDifficulty 
+{
+    normal
+    hard
+    madness
+}
+
+Gameworld *-- Generator
+Generator --> GeneratorType : type >
+Generator --> GeneratorDifficulty : difficulty >
+Generator --> StateHandler
+SkillcheckHandler --> Skillcheck : triggers >
+SkillcheckHandler --> MadnessSkillcheck
+SkillcheckHandler --> RelentlessSkillcheck
 
 @enduml
