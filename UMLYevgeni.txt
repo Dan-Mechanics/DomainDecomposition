@@ -10,32 +10,59 @@ class Generator
     skillcheckTimer: float
 }
 
-class SkillcheckHandler
+abstract class SkillcheckHandler
 {
     currentState();
-    StartSkillcheck();
+    StartSkillcheck()
+}
+
+class SpawnManager
+{
+    Start()
+    availableSpawnPoints : List<SpawnPoint>
+    SelectSpawnPoints()
+}
+
+class SpawnPoint
+{
+    position : (x,y,z)
+    id : string
+}
+
+class Perks
+{
+    name : string
+    luck : float
+}
+
+class Offerings
+{
+    name : string
+    luck : float
 }
 
 class Timer
 {
     timerLength : float
-    onTimerComplete();
+    onTimerComplete()
 }
 
 
-class GeneratorStateHandler
+abstract class GeneratorStateHandler
 {
     defaultRepairSpeed
     playersRepairing: int
+    completedGenerators : int
     isRepairable: bool
+    isInfected: bool
     currentStates: List<string>
-    addState();
-    removeState();
+    Update()
+    addState()
+    removeState()
 }
 
 object IdleState
 IdleState : speed = 0
-
 
 object ProgressingState
 ProgressingState : speed = defaultRepairSpeed * playersRepairing
@@ -51,8 +78,9 @@ object BlockedState
 BlockedState : isRepairable = false
 
 object InfectedState
+InfectedState : isInfected = true
 
-object Skillcheck
+class Skillcheck
 Skillcheck : difficulty = "normal"
 Skillcheck : position = "center"
 Skillcheck : succesModifier = +5%
@@ -61,7 +89,7 @@ Skillcheck : failModifier = -10%
 Skillcheck : triggerSize = 25%
 Skillcheck : greatTriggerSize = 3%
 
-object MadnessSkillcheck
+class MadnessSkillcheck
 MadnessSkillcheck : difficulty = "hard"
 MadnessSkillcheck : position = "random"
 MadnessSkillcheck : succesModifier = +5%
@@ -70,7 +98,7 @@ MadnessSkillcheck : failModifier = -10%
 MadnessSkillcheck : triggerSize = 25%
 MadnessSkillcheck : greatTriggerSize = 3%
 
-object RelentlessSkillcheck
+class RelentlessSkillcheck
 RelentlessSkillcheck : difficulty = "hard"
 RelentlessSkillcheck : position = "center"
 RelentlessSkillcheck : succesModifier = +0%
@@ -87,15 +115,20 @@ enum GeneratorType
 }
 
 Gameworld *-- Generator
-Generator --> GeneratorType : type >
 
+Generator --> GeneratorType : type >
 Generator --> GeneratorStateHandler
 Generator --> SkillcheckHandler : triggers >
-SkillcheckHandler --> Skillcheck : trigger >
-SkillcheckHandler --> MadnessSkillcheck : killer trigger >
-SkillcheckHandler --> RelentlessSkillcheck : perk trigger >
+Generator --> SpawnManager : get spawns >
 
+SkillcheckHandler --|> Skillcheck : trigger >
+SkillcheckHandler --|> MadnessSkillcheck : killer trigger >
+SkillcheckHandler --|> RelentlessSkillcheck : perk trigger >
+SkillcheckHandler --> Perks
 SkillcheckHandler *-- Timer
+
+
+InfectedState *-- Timer
 
 GeneratorStateHandler --> IdleState
 GeneratorStateHandler --> ProgressingState
@@ -103,5 +136,12 @@ GeneratorStateHandler --> RegressingState
 GeneratorStateHandler --> CompleteState
 GeneratorStateHandler --> BlockedState
 GeneratorStateHandler --> InfectedState
+
+SpawnManager --> Perks : reads >
+SpawnManager --> Offerings : reads >
+SpawnManager --> SpawnPoint : selects from >
+
+
+
 
 @enduml
