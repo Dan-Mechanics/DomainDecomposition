@@ -1,22 +1,56 @@
 @startuml
-title Dead by Daylight : Generators
+title Dead by Daylight : Generators & Skillchecks
 
 class Generator 
 {
     type: string
     position: (x,y,z)
     progress: float
-    difficulty: string
     state: List<string>
+    skillcheckTimer: float
 }
 
 class SkillcheckHandler
 {
-
+    currentState();
+    StartSkillcheck();
 }
 
-object StateHandler
-StateHandler : currentStates = ["progressing", "regressing", "idle", "complete", "infected", ]
+class Timer
+{
+    timerLength : float
+    onTimerComplete();
+}
+
+
+class GeneratorStateHandler
+{
+    defaultRepairSpeed
+    playersRepairing: int
+    isRepairable: bool
+    currentStates: List<string>
+    addState();
+    removeState();
+}
+
+object IdleState
+IdleState : speed = 0
+
+
+object ProgressingState
+ProgressingState : speed = defaultRepairSpeed * playersRepairing
+
+object RegressingState
+RegressingState : speed = defaultRepairSpeed * -1
+
+object CompleteState
+CompleteState : speed = 0
+CompleteState : isRepairable = false
+
+object BlockedState
+BlockedState : isRepairable = false
+
+object InfectedState
 
 object Skillcheck
 Skillcheck : difficulty = "normal"
@@ -52,19 +86,22 @@ enum GeneratorType
     floodlight
 }
 
-enum GeneratorDifficulty 
-{
-    normal
-    hard
-    madness
-}
-
 Gameworld *-- Generator
 Generator --> GeneratorType : type >
-Generator --> GeneratorDifficulty : difficulty >
-Generator --> StateHandler
-SkillcheckHandler --> Skillcheck : triggers >
-SkillcheckHandler --> MadnessSkillcheck
-SkillcheckHandler --> RelentlessSkillcheck
+
+Generator --> GeneratorStateHandler
+Generator --> SkillcheckHandler : triggers >
+SkillcheckHandler --> Skillcheck : trigger >
+SkillcheckHandler --> MadnessSkillcheck : killer trigger >
+SkillcheckHandler --> RelentlessSkillcheck : perk trigger >
+
+SkillcheckHandler *-- Timer
+
+GeneratorStateHandler --> IdleState
+GeneratorStateHandler --> ProgressingState
+GeneratorStateHandler --> RegressingState
+GeneratorStateHandler --> CompleteState
+GeneratorStateHandler --> BlockedState
+GeneratorStateHandler --> InfectedState
 
 @enduml
