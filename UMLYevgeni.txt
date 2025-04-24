@@ -47,7 +47,6 @@ class Timer
     onTimerComplete()
 }
 
-
 abstract class GeneratorStateHandler
 {
     defaultRepairSpeed
@@ -80,14 +79,14 @@ BlockedState : isRepairable = false
 object InfectedState
 InfectedState : isInfected = true
 
-class Skillcheck
-Skillcheck : difficulty = "normal"
-Skillcheck : position = "center"
-Skillcheck : succesModifier = +5%
-Skillcheck : greatSuccesModifier = +15%
-Skillcheck : failModifier = -10%
-Skillcheck : triggerSize = 25%
-Skillcheck : greatTriggerSize = 3%
+class NormalSkillcheck
+NormalSkillcheck : difficulty = "normal"
+NormalSkillcheck : position = "center"
+NormalSkillcheck : succesModifier = +5%
+NormalSkillcheck : greatSuccesModifier = +15%
+NormalSkillcheck : failModifier = -10%
+NormalSkillcheck : triggerSize = 25%
+NormalSkillcheck : greatTriggerSize = 3%
 
 class MadnessSkillcheck
 MadnessSkillcheck : difficulty = "hard"
@@ -121,21 +120,20 @@ Generator --> GeneratorStateHandler
 Generator --> SkillcheckHandler : triggers >
 Generator --> SpawnManager : get spawns >
 
-SkillcheckHandler --|> Skillcheck : trigger >
+SkillcheckHandler --|> NormalSkillcheck : trigger >
 SkillcheckHandler --|> MadnessSkillcheck : killer trigger >
 SkillcheckHandler --|> RelentlessSkillcheck : perk trigger >
-SkillcheckHandler --> Perks
-SkillcheckHandler *-- Timer
+SkillcheckHandler --> Perks : reads >
+SkillcheckHandler ..> Timer
 
+InfectedState ..> Timer
 
-InfectedState *-- Timer
-
-GeneratorStateHandler --> IdleState
-GeneratorStateHandler --> ProgressingState
-GeneratorStateHandler --> RegressingState
-GeneratorStateHandler --> CompleteState
-GeneratorStateHandler --> BlockedState
-GeneratorStateHandler --> InfectedState
+IdleState --|> GeneratorStateHandler
+ProgressingState --|> GeneratorStateHandler
+RegressingState --|> GeneratorStateHandler
+CompleteState --|> GeneratorStateHandler
+BlockedState --|> GeneratorStateHandler
+InfectedState --|> GeneratorStateHandler
 
 SpawnManager --> Perks : reads >
 SpawnManager --> Offerings : reads >
