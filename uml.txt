@@ -10,14 +10,9 @@ class FSM<T>
     + void Update()
 }
 
-interface IDamagable
+interface IInteractable
 {
-    + void TakeDamage()
-}
-
-interface IInfectable
-{
-    + void Infect()
+    + void Interact(type: Type)
 }
 
 interface IState 
@@ -28,7 +23,6 @@ interface IState
     + void ExitState()
 }
 
-
 class Timer
 {
     + onTimerComplete: event Action
@@ -36,26 +30,24 @@ class Timer
     + void SetTimer(value: float)
 }
 
-class HealthStateHandler implements IDamagable, IInfectable
+class HealthStateHandler implements IInteractable
 {
     - fsm: readonly FSM<HealthState>
     
     + Setup()
-    + void TakeDamage()
-    + void Infect()
     + Update()
-    - Interact(type: Type)
+    + Interact(type: Type)
 }
 
 class KillerAttacks
 {
-    + void DealDamage()
+    + void Slash()
     + void Infect()
 }
 
-class DestroyableProp implements IDamagable
+class DestroyableProp implements IInteractable
 {
-    + void TakeDamage()
+    + void Interact(type: Type)
     - void Destroy();
 }
 
@@ -127,7 +119,8 @@ Timer --* DeepWoundState
 Timer --*  InfectedState
 FSM ..> IState
 HealthStateHandler ..> HealthState
-KillerAttacks ..> IDamagable
-KillerAttacks ..> IInfectable
+KillerAttacks ..> IInteractable
+
+note "TIM CREDIT: GEMINI AI gebruikt alleen voor het leren van UML." as TimNote1
 
 @enduml
