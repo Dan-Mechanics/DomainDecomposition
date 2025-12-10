@@ -121,6 +121,4 @@ FSM ..> IState
 HealthStateHandler ..> HealthState
 KillerAttacks ..> IInteractable
 
-note "TIM CREDIT: GEMINI AI gebruikt alleen voor het leren van UML." as TimNote1
-
 @enduml
